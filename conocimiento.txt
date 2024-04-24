@@ -1,0 +1,16 @@
+
+        USO DE BIND PARA CAPTURAR EVENTOS
+        EJEMPLO:
+        widget.bind( evento    ,    controlador)
+                       ^                ^
+                Boton o tecla |  llamada a funcion
+        
+        <Key> para las teclas del teclado
+        <Button-1> boton del mouse
+        <BackSpace> la tecla de borrar
+        
+        YT: https://youtu.be/pDUryC_aRO0?si=7tQN5IPtFzH-PuvR
+        WEB: https://programacionfacil.org/blog/soluciones-de-ejercicios-con-eventos-de-tkinter-100-dias-de-python-12/
+        DOC: https://tcl.tk/man/tcl8.7/TkCmd/keysyms.html
+ 
+        
