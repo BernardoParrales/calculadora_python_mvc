@@ -5,6 +5,7 @@ from calculadora.controlador import CalculadoraControl
 class CalculadoraVista:
     
     def __init__(self):
+        # Inicializar la ventana raiz (root)
         self.ventana = Tk()
         self.controlador = CalculadoraControl()
         self.ventana.title("Calculadora")
@@ -12,22 +13,24 @@ class CalculadoraVista:
         self.ventana.resizable(0,0)
         
         # Agregar icono
-        #self.icon = 
         self.ventana.iconbitmap('./calculadora/icon.ico')
         
         # Variables
         self.valor = StringVar(value="0")
-        self.valor_historial = StringVar()
-        self.valor_float = ""
-        self.contador = 0
+        self.valor_float = "0"
         
-        # Manejo de estados para las operaciones
+        self.valor_historial = StringVar()
+        self.valor_historial_string = ""
+        
+        # Manejo de estados para las operaciones 
+        # 0 = Activo / 1 = Inactivo
         self.suma_estado = 0
         self.resta_estado = 0
         self.multiplicar_estado = 0
         self.dividir_estado = 0
+        self.punto_estado = 0
         
-        
+
         # Marcos o Frames
         self.titulo()
         self.pantalla_operacion_en_tiempo_real()
@@ -61,6 +64,10 @@ class CalculadoraVista:
             relief=SOLID
         )
         self.marco_operacion.pack()
+        self.marco_operacion.pack_propagate(False)
+        
+        self.pantalla_operacion = Label(self.marco_operacion, textvariable=self.valor_historial)
+        self.pantalla_operacion.pack()
         
     def pantalla(self):
         # Muestra los valores que se ingresan por teclado | Frame
@@ -111,6 +118,10 @@ class CalculadoraVista:
             self.suma_estado = 1
             print("+")
             self.controlador.agregar_primer_valor(self.valor_float)
+            
+            self.valor_historial_string = self.valor_float + " + "
+            self.valor_historial.set(self.valor_historial_string)
+            
             self.valor_float = ""
             self.actualizar_pantalla()
             
@@ -119,6 +130,10 @@ class CalculadoraVista:
             self.resta_estado = 1
             print("-")
             self.controlador.agregar_primer_valor(self.valor_float)
+            
+            self.valor_historial_string = self.valor_float + " - "
+            self.valor_historial.set(self.valor_historial_string)
+            
             self.valor_float = ""
             self.actualizar_pantalla()
             
@@ -127,6 +142,10 @@ class CalculadoraVista:
             self.multiplicar_estado = 1
             print("*")
             self.controlador.agregar_primer_valor(self.valor_float)
+            
+            self.valor_historial_string = self.valor_float + " x "
+            self.valor_historial.set(self.valor_historial_string)
+            
             self.valor_float = ""
             self.actualizar_pantalla()
             
@@ -135,13 +154,18 @@ class CalculadoraVista:
             self.dividir_estado = 1
             print("/")
             self.controlador.agregar_primer_valor(self.valor_float)
+            
+            self.valor_historial_string = self.valor_float + " / "
+            self.valor_historial.set(self.valor_historial_string)
+            
             self.valor_float = ""
             self.actualizar_pantalla()
         
     # Realizar las operaciones        
     def realizar_operacion(self):
         if self.suma_estado == 1:
-            self.controlador.agregar_segundo_valor(self.valor_float) 
+            self.controlador.agregar_segundo_valor(self.valor_float)
+            self.actualizar_pantalla_tiempo_real()
             result = self.controlador.sumar_valores() # op
             print(result)
             self.suma_estado = 0
@@ -150,6 +174,7 @@ class CalculadoraVista:
             
         elif self.resta_estado == 1:
             self.controlador.agregar_segundo_valor(self.valor_float)
+            self.actualizar_pantalla_tiempo_real()
             result = self.controlador.restar_valores() # op
             print(result)
             self.resta_estado = 0
@@ -158,6 +183,7 @@ class CalculadoraVista:
             
         elif self.multiplicar_estado == 1:
             self.controlador.agregar_segundo_valor(self.valor_float)
+            self.actualizar_pantalla_tiempo_real() 
             result = self.controlador.multiplicar_valores() # op
             print(result)
             self.multiplicar_estado = 0
@@ -166,6 +192,7 @@ class CalculadoraVista:
             
         elif self.dividir_estado == 1:
             self.controlador.agregar_segundo_valor(self.valor_float)
+            self.actualizar_pantalla_tiempo_real()
             result = self.controlador.dividir_valores() # op
             print(result[0])
             self.dividir_estado = 0
@@ -175,6 +202,11 @@ class CalculadoraVista:
             if result[1][0] == False:
                 messagebox.showerror("Error", "No se puede dividir entre 0.")
     
+    def actualizar_pantalla_tiempo_real(self):
+        self.valor_historial_string = self.valor_historial_string + self.valor_float + " ="
+        self.valor_historial.set(self.valor_historial_string)
+             
+    
     def delete(self):
         self.valor_float = self.valor_float[:-1]
         self.actualizar_pantalla()
@@ -183,26 +215,24 @@ class CalculadoraVista:
         try:
             for i in self.valor_float:
                 if i == ".":
-                    self.contador = 1
+                    self.punto_estado = 1
             if self.valor_float[-1] == ".":
-                self.contador = 0
+                self.punto_estado = 0
         except Exception:
-            self.contador = 1
+            self.punto_estado = 0
         
     def add(self, valor):
         print(valor)
         self.valor_float = self.valor_float + str(valor)
         self.actualizar_pantalla()
-        print(self.valor_float)
       
     def actualizar_pantalla(self):
         self.valor.set(self.valor_float)  
     
     # Trabajar en la funcion para agregar el punto    
     def add_punto(self):
-        
-        if self.contador == 0:
-            self.contador += 1
+        if self.punto_estado == 0:
+            self.punto_estado = 1
             print(".")
             self.valor_float = self.valor_float + "."
             self.valor.set(self.valor_float)
@@ -231,5 +261,7 @@ class CalculadoraVista:
             relief=SOLID
         )
         self.historial.pack()
+        
+        
         
 
