@@ -17,7 +17,7 @@ class CalculadoraVista:
         
         # Variables
         self.valor = StringVar(value="0")
-        self.valor_float = "0"
+        self.valor_float = ""
         
         self.valor_tiempo_real = StringVar()
         self.valor_tiempo_real_string = ""
@@ -237,10 +237,8 @@ class CalculadoraVista:
         
     def add(self, valor):
         print(valor)
-        if valor != 0:
-            self.valor_float = ""
-            self.valor_float = self.valor_float + str(valor)
-            self.actualizar_pantalla()
+        self.valor_float = self.valor_float + str(valor)
+        self.actualizar_pantalla()
       
     def actualizar_pantalla(self):
         self.valor.set(self.valor_float)  
