@@ -11,6 +11,10 @@ class CalculadoraVista:
         self.ventana.geometry("320x500")
         self.ventana.resizable(0,0)
         
+        # Agregar icono
+        #self.icon = 
+        self.ventana.iconbitmap('./calculadora/icon.ico')
+        
         # Variables
         self.valor = StringVar(value="0")
         self.valor_historial = StringVar()
