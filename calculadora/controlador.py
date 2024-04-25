@@ -9,8 +9,6 @@ class CalculadoraControl:
         self.resultado = 0
         self.historial = ""
         
-        
-        
     def agregar_primer_valor(self, valor_1):
         self.modelo.set_valor_1(float(valor_1))
         
@@ -27,4 +25,12 @@ class CalculadoraControl:
     
     def restar_valores(self):
         self.modelo.restar()
+        return str(self.modelo.get_resultado())
+    
+    def multiplicar_valores(self):
+        self.modelo.multiplicar()
+        return str(self.modelo.get_resultado())
+    
+    def dividir_valores(self):
+        self.modelo.dividir()
         return str(self.modelo.get_resultado())
