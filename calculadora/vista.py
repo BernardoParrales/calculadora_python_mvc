@@ -19,8 +19,11 @@ class CalculadoraVista:
         self.valor = StringVar(value="0")
         self.valor_float = "0"
         
-        self.valor_historial = StringVar()
-        self.valor_historial_string = ""
+        self.valor_tiempo_real = StringVar()
+        self.valor_tiempo_real_string = ""
+        
+        self.historial = StringVar()
+        self.historial_string = ""
         
         # Manejo de estados para las operaciones 
         # 0 = Activo / 1 = Inactivo
@@ -54,6 +57,9 @@ class CalculadoraVista:
         
         # Titulo principal
         text_titulo = Label(self.marco_titulo_principal, text="CALCULADORA BÁSICA")
+        text_titulo.config(
+            font=("Helvica", 14)
+        )
         text_titulo.pack(anchor=W)
         
     def pantalla_operacion_en_tiempo_real(self):
@@ -66,7 +72,7 @@ class CalculadoraVista:
         self.marco_operacion.pack()
         self.marco_operacion.pack_propagate(False)
         
-        self.pantalla_operacion = Label(self.marco_operacion, textvariable=self.valor_historial)
+        self.pantalla_operacion = Label(self.marco_operacion, textvariable=self.valor_tiempo_real)
         self.pantalla_operacion.pack()
         
     def pantalla(self):
@@ -119,8 +125,8 @@ class CalculadoraVista:
             print("+")
             self.controlador.agregar_primer_valor(self.valor_float)
             
-            self.valor_historial_string = self.valor_float + " + "
-            self.valor_historial.set(self.valor_historial_string)
+            self.valor_tiempo_real_string = self.valor_float + " + "
+            self.valor_tiempo_real.set(self.valor_tiempo_real_string)
             
             self.valor_float = ""
             self.actualizar_pantalla()
@@ -131,8 +137,8 @@ class CalculadoraVista:
             print("-")
             self.controlador.agregar_primer_valor(self.valor_float)
             
-            self.valor_historial_string = self.valor_float + " - "
-            self.valor_historial.set(self.valor_historial_string)
+            self.valor_tiempo_real_string = self.valor_float + " - "
+            self.valor_tiempo_real.set(self.valor_tiempo_real_string)
             
             self.valor_float = ""
             self.actualizar_pantalla()
@@ -143,8 +149,8 @@ class CalculadoraVista:
             print("*")
             self.controlador.agregar_primer_valor(self.valor_float)
             
-            self.valor_historial_string = self.valor_float + " x "
-            self.valor_historial.set(self.valor_historial_string)
+            self.valor_tiempo_real_string = self.valor_float + " x "
+            self.valor_tiempo_real.set(self.valor_tiempo_real_string)
             
             self.valor_float = ""
             self.actualizar_pantalla()
@@ -155,8 +161,8 @@ class CalculadoraVista:
             print("/")
             self.controlador.agregar_primer_valor(self.valor_float)
             
-            self.valor_historial_string = self.valor_float + " / "
-            self.valor_historial.set(self.valor_historial_string)
+            self.valor_tiempo_real_string = self.valor_float + " / "
+            self.valor_tiempo_real.set(self.valor_tiempo_real_string)
             
             self.valor_float = ""
             self.actualizar_pantalla()
@@ -171,6 +177,7 @@ class CalculadoraVista:
             self.suma_estado = 0
             self.valor_float = result
             self.actualizar_pantalla()
+            self.actualizar_pantalla_historial(result)
             
         elif self.resta_estado == 1:
             self.controlador.agregar_segundo_valor(self.valor_float)
@@ -180,6 +187,7 @@ class CalculadoraVista:
             self.resta_estado = 0
             self.valor_float = result
             self.actualizar_pantalla()
+            self.actualizar_pantalla_historial(result)
             
         elif self.multiplicar_estado == 1:
             self.controlador.agregar_segundo_valor(self.valor_float)
@@ -189,6 +197,7 @@ class CalculadoraVista:
             self.multiplicar_estado = 0
             self.valor_float = result
             self.actualizar_pantalla()
+            self.actualizar_pantalla_historial(result)
             
         elif self.dividir_estado == 1:
             self.controlador.agregar_segundo_valor(self.valor_float)
@@ -201,11 +210,16 @@ class CalculadoraVista:
             
             if result[1][0] == False:
                 messagebox.showerror("Error", "No se puede dividir entre 0.")
+            else:
+                self.actualizar_pantalla_historial(result)
     
     def actualizar_pantalla_tiempo_real(self):
-        self.valor_historial_string = self.valor_historial_string + self.valor_float + " ="
-        self.valor_historial.set(self.valor_historial_string)
+        self.valor_tiempo_real_string = self.valor_tiempo_real_string + self.valor_float + " = "
+        self.valor_tiempo_real.set(self.valor_tiempo_real_string)
              
+    def actualizar_pantalla_historial(self, result):
+        self.historial_string = self.historial_string + self.valor_tiempo_real_string + result + "\n"
+        self.historial.set(self.historial_string)
     
     def delete(self):
         self.valor_float = self.valor_float[:-1]
@@ -223,8 +237,10 @@ class CalculadoraVista:
         
     def add(self, valor):
         print(valor)
-        self.valor_float = self.valor_float + str(valor)
-        self.actualizar_pantalla()
+        if valor != 0:
+            self.valor_float = ""
+            self.valor_float = self.valor_float + str(valor)
+            self.actualizar_pantalla()
       
     def actualizar_pantalla(self):
         self.valor.set(self.valor_float)  
@@ -251,16 +267,26 @@ class CalculadoraVista:
         
         # Titulo historial
         text_titulo = Label(self.marco_titulo_historial, text="Historial")
+        text_titulo.config(
+            font=("Helvica", 10)
+        )
         text_titulo.pack(anchor=W)
         
     def mostrar_historial_en_tiempo_real(self):
         # Muestra el historial de las operaciones realizadas | Frame
-        self.historial = Frame(self.ventana, height=340, width=320)
-        self.historial.config(
+        self.historial_caja = Frame(self.ventana, height=340, width=320)
+        self.historial_caja.config(
             bd=1,
             relief=SOLID
         )
-        self.historial.pack()
+        self.historial_caja.pack()
+        self.historial_caja.pack_propagate(False)
+        
+        self.pantalla_historial = Label(self.historial_caja, textvariable=self.historial)
+        self.pantalla_historial.config(
+            font=("Helvica", 12)
+        )
+        self.pantalla_historial.pack()
         
         
         
