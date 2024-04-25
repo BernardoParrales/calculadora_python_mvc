@@ -32,5 +32,5 @@ class CalculadoraControl:
         return str(self.modelo.get_resultado())
     
     def dividir_valores(self):
-        self.modelo.dividir()
-        return str(self.modelo.get_resultado())
+        result = self.modelo.dividir()
+        return [str(self.modelo.get_resultado()), result]

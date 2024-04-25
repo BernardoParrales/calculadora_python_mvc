@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from calculadora.controlador import CalculadoraControl
 
 class CalculadoraVista:
@@ -19,8 +20,8 @@ class CalculadoraVista:
         # Manejo de estados para las operaciones
         self.suma_estado = 0
         self.resta_estado = 0
-        self.multiplicacio_estado = 0
-        self.division_estado = 0
+        self.multiplicar_estado = 0
+        self.dividir_estado = 0
         
         
         # Marcos o Frames
@@ -96,8 +97,11 @@ class CalculadoraVista:
         self.ventana.bind("<BackSpace>", lambda e: self.delete())
         self.ventana.bind("+", lambda e: self.sumar())
         self.ventana.bind("-", lambda e: self.restar())
+        self.ventana.bind("*", lambda e: self.multiplicar())
+        self.ventana.bind("/", lambda e: self.dividir())
         self.ventana.bind("<Return>", lambda e: self.realizar_operacion())
         
+    # Agregar valor mediante la toma de eventos de teclado    
     def sumar(self):
         if self.suma_estado == 0:
             self.suma_estado = 1
@@ -114,14 +118,32 @@ class CalculadoraVista:
             self.valor_float = ""
             self.actualizar_pantalla()
             
+    def multiplicar(self):
+        if self.multiplicar_estado == 0:
+            self.multiplicar_estado = 1
+            print("*")
+            self.controlador.agregar_primer_valor(self.valor_float)
+            self.valor_float = ""
+            self.actualizar_pantalla()
+            
+    def dividir(self):
+        if self.dividir_estado == 0:
+            self.dividir_estado = 1
+            print("/")
+            self.controlador.agregar_primer_valor(self.valor_float)
+            self.valor_float = ""
+            self.actualizar_pantalla()
+        
+    # Realizar las operaciones        
     def realizar_operacion(self):
         if self.suma_estado == 1:
-            self.controlador.agregar_segundo_valor(self.valor_float)
+            self.controlador.agregar_segundo_valor(self.valor_float) 
             result = self.controlador.sumar_valores() # op
             print(result)
             self.suma_estado = 0
             self.valor_float = result
             self.actualizar_pantalla()
+            
         elif self.resta_estado == 1:
             self.controlador.agregar_segundo_valor(self.valor_float)
             result = self.controlador.restar_valores() # op
@@ -129,6 +151,25 @@ class CalculadoraVista:
             self.resta_estado = 0
             self.valor_float = result
             self.actualizar_pantalla()
+            
+        elif self.multiplicar_estado == 1:
+            self.controlador.agregar_segundo_valor(self.valor_float)
+            result = self.controlador.multiplicar_valores() # op
+            print(result)
+            self.multiplicar_estado = 0
+            self.valor_float = result
+            self.actualizar_pantalla()
+            
+        elif self.dividir_estado == 1:
+            self.controlador.agregar_segundo_valor(self.valor_float)
+            result = self.controlador.dividir_valores() # op
+            print(result[0])
+            self.dividir_estado = 0
+            self.valor_float = result[0]
+            self.actualizar_pantalla()
+            
+            if result[1][0] == False:
+                messagebox.showerror("Error", "No se puede dividir entre 0.")
     
     def delete(self):
         self.valor_float = self.valor_float[:-1]
