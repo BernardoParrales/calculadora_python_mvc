@@ -12,6 +12,7 @@ class CalculadoraVista:
         
         # Variables
         self.valor = StringVar(value="0")
+        self.valor_historial = StringVar()
         self.valor_float = ""
         self.contador = 0
         
@@ -21,7 +22,7 @@ class CalculadoraVista:
         
         # Marcos o Frames
         self.titulo()
-        self.operacion_en_tiempo_real()
+        self.pantalla_operacion_en_tiempo_real()
         self.pantalla()
         self.teclado()
         self.titulo_historial()
@@ -44,7 +45,7 @@ class CalculadoraVista:
         text_titulo = Label(self.marco_titulo_principal, text="CALCULADORA BÁSICA")
         text_titulo.pack(anchor=W)
         
-    def operacion_en_tiempo_real(self):
+    def pantalla_operacion_en_tiempo_real(self):
         # Mostrar la operación que se esta realizando | Frame
         self.marco_operacion = Frame(self.ventana, height=40, width=320)
         self.marco_operacion.config(
