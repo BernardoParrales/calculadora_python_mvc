@@ -16,9 +16,12 @@ class CalculadoraVista:
         self.valor_float = ""
         self.contador = 0
         
-        # Madeno de estados
+        # Manejo de estados para las operaciones
         self.suma_estado = 0
-        #self.valor.set("0")
+        self.resta_estado = 0
+        self.multiplicacio_estado = 0
+        self.division_estado = 0
+        
         
         # Marcos o Frames
         self.titulo()
@@ -92,6 +95,7 @@ class CalculadoraVista:
         # TECLAS DE OPERACIONES
         self.ventana.bind("<BackSpace>", lambda e: self.delete())
         self.ventana.bind("+", lambda e: self.sumar())
+        self.ventana.bind("-", lambda e: self.restar())
         self.ventana.bind("<Return>", lambda e: self.realizar_operacion())
         
     def sumar(self):
@@ -102,12 +106,27 @@ class CalculadoraVista:
             self.valor_float = ""
             self.actualizar_pantalla()
             
+    def restar(self):
+        if self.resta_estado == 0:
+            self.resta_estado = 1
+            print("-")
+            self.controlador.agregar_primer_valor(self.valor_float)
+            self.valor_float = ""
+            self.actualizar_pantalla()
+            
     def realizar_operacion(self):
         if self.suma_estado == 1:
             self.controlador.agregar_segundo_valor(self.valor_float)
-            result = self.controlador.sumar_valores()
+            result = self.controlador.sumar_valores() # op
             print(result)
             self.suma_estado = 0
+            self.valor_float = result
+            self.actualizar_pantalla()
+        elif self.resta_estado == 1:
+            self.controlador.agregar_segundo_valor(self.valor_float)
+            result = self.controlador.restar_valores() # op
+            print(result)
+            self.resta_estado = 0
             self.valor_float = result
             self.actualizar_pantalla()
     
